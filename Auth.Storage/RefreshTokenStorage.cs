@@ -54,12 +54,15 @@ namespace Auth.Storage
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RevokeRefreshTokenAsync(
+        public async Task<IResult<Domain.Entities.RefreshToken>> RevokeRefreshTokenAsync(
             Domain.Entities.RefreshToken revokeToken, Domain.Entities.RefreshToken newToken, string reason, string ip, CancellationToken cancellationToken)
         {
             await CreateRefreshTokenAsync(newToken, cancellationToken);
-            revokeToken = revokeToken.Revoke(newToken.Token, reason, ip);
-            await UpdateAsync(revokeToken, cancellationToken);
+            var revokeTokenResult = revokeToken.Revoke(newToken.Token, reason, ip);
+            if (!revokeTokenResult.Errors.Any())
+                await UpdateAsync(revokeTokenResult.Value, cancellationToken);
+            return revokeTokenResult;
+
         }
 
         private async Task UpdateAsync(Domain.Entities.RefreshToken refreshToken, CancellationToken cancellation)

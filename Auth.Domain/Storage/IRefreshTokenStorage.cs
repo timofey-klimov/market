@@ -14,6 +14,6 @@ namespace Auth.Domain.Storage
 
         public Task<IResult<RefreshToken>> FindRefreshTokenAsync(Guid userId, string token, CancellationToken cancellationToken);
 
-        public Task RevokeRefreshTokenAsync(RefreshToken revokeToken, RefreshToken newToken, string reason, string ip, CancellationToken cancellationToken);
+        public Task<IResult<RefreshToken>> RevokeRefreshTokenAsync(RefreshToken revokeToken, RefreshToken newToken, string reason, string ip, CancellationToken cancellationToken);
     }
 }

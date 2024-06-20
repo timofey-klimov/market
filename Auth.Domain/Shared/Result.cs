@@ -74,6 +74,11 @@ namespace Auth.Domain.Shared
         }
 
         public static Result<T> FromErrors(string error) => new Result<T>(error);
+
+        public static implicit operator Result<T>(T result)
+        {
+            return new Result<T>(result);
+        }
     }
 
     public static class ResultExtensions

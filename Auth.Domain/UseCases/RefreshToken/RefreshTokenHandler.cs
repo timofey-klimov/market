@@ -29,7 +29,9 @@ namespace Auth.Domain.UseCases.RefreshToken
 
             var refreshToken = await GenerateTokenWithouCollisionAsync(request, findUserResult.Value, cancellationToken);
 
-            await refreshTokenStorage.RevokeRefreshTokenAsync(tokenResult.Value, refreshToken, "Issue new jwt token", request.Ip, cancellationToken);
+            var result = await refreshTokenStorage.RevokeRefreshTokenAsync(tokenResult.Value, refreshToken, "Issue new jwt token", request.Ip, cancellationToken);
+
+            result.Handle(handleError: AppExceptions.Domain);
 
             return new AuthenticateUserModel(generateJwtResult.Value, refreshToken.Token);
         }

@@ -44,20 +44,24 @@ namespace Auth.Domain.Entities
                 .Validate(createByIp.IsNotEmpty, "CreateByIp is empty");
         }
 
-        public RefreshToken Revoke(string replacedByToken, string reason, string ip)
+        public IResult<RefreshToken> Revoke(string replacedByToken, string reason, string ip)
         {
-            return new RefreshToken()
-            {
-                Id = this.Id,
-                UserId = this.UserId,
-                Token = this.Token,
-                ExpiresAt = this.ExpiresAt,
-                CreateByIp = this.CreateByIp,
-                RevokeAt = DateTime.UtcNow,
-                RevokedByIp = ip,
-                ReasonRevoked = reason,
-                ReplacedByToken = replacedByToken
-            };
+            return Result<RefreshToken>
+                .Bind(() => new RefreshToken()
+                {
+                    Id = this.Id,
+                    UserId = this.UserId,
+                    Token = this.Token,
+                    ExpiresAt = this.ExpiresAt,
+                    CreateByIp = this.CreateByIp,
+                    RevokeAt = DateTime.UtcNow,
+                    RevokedByIp = ip,
+                    ReasonRevoked = reason,
+                    ReplacedByToken = replacedByToken
+                })
+                .Validate(replacedByToken.IsNotEmpty, "Invalid token")
+                .Validate(reason.IsNotEmpty, "Invalid reason")
+                .Validate(ip.IsNotEmpty, "Invalid ip");
         }
     }
 }
